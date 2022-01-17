@@ -260,6 +260,7 @@ def download_folder(
     speed=None,
     use_cookies=True,
     remaining_ok=False,
+    sender_id=None
 ):
     """Downloads entire folder from URL.
 
@@ -347,6 +348,7 @@ def download_folder(
             proxy=proxy,
             speed=speed,
             use_cookies=use_cookies,
+            sender_id=sender_id,
         )
 
         if filename is None:
