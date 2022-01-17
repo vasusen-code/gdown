@@ -237,7 +237,7 @@ def download(
         if total is not None:
             total = int(total)
         if not quiet:
-            pbar = tqdm.tqdm(desc=f"GDRIVE FILE DOWN for {sender_id}\n\n", total=total, unit="B", unit_scale=True)
+            pbar = tqdm.tqdm(desc=f"GDRIVE FILE DOWN for {sender_id}", total=total, unit="B", unit_scale=True)
         t_start = time.time()
         for chunk in res.iter_content(chunk_size=CHUNK_SIZE):
             f.write(chunk)
