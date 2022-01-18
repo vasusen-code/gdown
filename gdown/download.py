@@ -21,6 +21,10 @@ CHUNK_SIZE = 512 * 1024  # 512KB
 home = osp.expanduser("~")
 
 from multiprocessing.pool import ThreadPool
+# https://stackoverflow.com/a/56528204
+def job(pbar, inp):
+    time.sleep(1)
+    pbar.update(inp)
 
 # textwrap.indent for Python2
 def indent(text, prefix):
@@ -243,7 +247,7 @@ def download(
             with tqdm.tqdm(desc=f"GDRIVE FILE DOWN for {sender_id}", total=total, unit="B", unit_scale=True) as pbar:
                 for chunk in res.iter_content(chunk_size=CHUNK_SIZE):
                     f.write(chunk)
-                    pool.apply_async(job(len(chunk)))
+                    pool.apply_async(job(pbar, len(chunk)))
                     if speed is not None:
                         elapsed_time_expected = 1.0 * pbar.n / speed
                         elapsed_time = time.time() - t_start
@@ -263,7 +267,3 @@ def download(
 
     return output
 
-# https://stackoverflow.com/a/56528204
-def job(inp):
-    time.sleep(1)
-    pbar.update(inp)
