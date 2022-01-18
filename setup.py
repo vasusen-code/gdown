@@ -55,7 +55,6 @@ setup(
         "six",
         "tqdm",
         "beautifulsoup4",
-        "multiprocessing",
     ],
     description="Google Drive direct download of big files.",
     long_description=get_long_description(),
