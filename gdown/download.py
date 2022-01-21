@@ -20,6 +20,11 @@ from .parse_url import parse_url
 CHUNK_SIZE = 512 * 1024  # 512KB
 home = osp.expanduser("~")
 
+from multiprocessing.pool import ThreadPool
+# https://stackoverflow.com/a/56528204
+def job(pbar, inp):
+    time.sleep(1)
+    pbar.update(inp)
 
 # textwrap.indent for Python2
 def indent(text, prefix):
@@ -238,15 +243,19 @@ def download(
             total = int(total)
         if not quiet:
             t_start = time.time()
+            pool = ThreadPool(5)
             with tqdm.tqdm(desc=f"GDRIVE FILE DOWN for {sender_id}", total=total, unit="B", unit_scale=True) as pbar:
                 for chunk in res.iter_content(chunk_size=CHUNK_SIZE):
                     f.write(chunk)
-                    pbar.update(len(chunk))
+                    pool.apply_async(job(pbar, len(chunk)))
                     if speed is not None:
                         elapsed_time_expected = 1.0 * pbar.n / speed
                         elapsed_time = time.time() - t_start
                         if elapsed_time < elapsed_time_expected:
                             time.sleep(elapsed_time_expected - elapsed_time)
+                if not quiet:
+                    pool.close()
+                    pool.join()
         if tmp_file:
             f.close()
             shutil.move(tmp_file, output)
@@ -257,3 +266,4 @@ def download(
         sess.close()
 
     return output
+
